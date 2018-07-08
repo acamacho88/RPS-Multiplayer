@@ -1,0 +1,18 @@
+h1 {
+    font-size: 40px;
+}
+
+h2 {
+    font-size: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 20px;
+}
+
+#loginForm {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}

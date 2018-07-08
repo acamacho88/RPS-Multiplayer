@@ -16,6 +16,9 @@ var options = 'rps';
 var username = '';
 var choice = '';
 var wins = 0;
+var losses = 0;
+
+var gameOver = 0;
 
 var opponent = '';
 var oppChoice = '';
@@ -24,13 +27,15 @@ var updateFB = function () {
     database.ref().push({
         username: username,
         choice: choice,
-        wins: wins
+        wins: wins,
+        losses: losses
     })
 }
 
 var resetGame = function () {
     choice = '';
     oppChoice = '';
+    updateFB();
     $("#choice").text('');
     $("#result").text('');
 }
@@ -42,24 +47,29 @@ var decideWinner = function () {
         endstring = 'won';
 
     } else if ((oppChoice == 's' && choice == 'p') || (oppChoice == 'p' && choice == 'r') || (oppChoice == 'r' && choice == 's')) {
+        losses++;
         endstring = 'lost';
     } else {
         endstring = 'tied';
     }
-    $("#result").text("Opponent chose " + oppChoice + ", you " + endstring + "!");
+    gameOver = 1;
+    $("#result").html("Opponent chose " + oppChoice + ", you " + endstring + "!</h2>" +
+        "<h2>Press the spacebar to play again.");
     updateFB();
 }
 
 $('#submitBtn').on("click", function (event) {
     event.preventDefault();
     username = $('#username').val().trim();
-
+    $('#username').val('');
+    $("#currentUser").text("Username: " + username);
     updateFB();
+    $('#loginForm').hide();
 })
 
 document.onkeyup = function (event) {
+    var input = event.key;
     if (username.length > 0 && choice == '') {
-        var input = event.key;
 
         for (var i = 0; i < options.length; i++) {
             if (options[i] == input.toLowerCase()) {
@@ -69,6 +79,12 @@ document.onkeyup = function (event) {
                 if (oppChoice !== '') decideWinner();
             }
         }
+    }
+    console.log(input == ' ');
+    console.log(gameOver);
+    if (gameOver == 1 && input == ' ') {
+        gameOver = 0;
+        resetGame();
     }
 }
 
